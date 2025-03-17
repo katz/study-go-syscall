@@ -6,23 +6,38 @@ import (
 	"os"
 )
 
-type Talker interface {
-	Talk()
+// see: https://mattn.kaoriya.net/software/lang/go/20140501172821.htm
+type pascalCaseWriter struct {
+	w    io.Writer
+	last byte
 }
 
-type Greeter struct {
-	name string
+func (w *pascalCaseWriter) Write(p []byte) (int, error) {
+	r := 0
+	var b [1]byte
+	for n, _ := range p {
+		b[0] = p[n]
+		switch w.last {
+		case ' ', '\t', '\r', '\n', 0:
+			if 'a' <= b[0] && b[0] <= 'z' {
+				b[0] -= 32
+			}
+		}
+
+		nw, err := w.w.Write(b[:])
+		if err != nil {
+			return r + nw, err
+		}
+		w.last = b[0]
+	}
+	return r, nil
 }
 
-func (g Greeter) Talk() {
-	fmt.Println("Hello, my name is", g.name)
+func NewPascalCaseWriter(w io.Writer) *pascalCaseWriter {
+	return &pascalCaseWriter{w, 0}
 }
 
 func main() {
-	file, err := os.Create("test.txt")
-	if err != nil {
-		panic(err)
-	}
-	writer := io.MultiWriter(file, os.Stdout)
-	io.WriteString(writer, "MultiWriter example\n")
+	w := NewPascalCaseWriter(os.Stdout)
+	fmt.Fprintln(w, "hello world")
 }
