@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
+	"strings"
 )
 
 type Talker interface {
@@ -18,7 +18,7 @@ func (g Greeter) Talk() {
 }
 
 func main() {
-	var buffer bytes.Buffer
-	buffer.Write([]byte("bytes.Buffer example\n"))
-	fmt.Println(buffer.String())
+	var builder strings.Builder
+	builder.Write([]byte("strings.Builder example\n"))
+	fmt.Println(builder.String())
 }
