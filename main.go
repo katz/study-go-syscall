@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 type Talker interface {
 	Talk()
@@ -15,7 +18,5 @@ func (g Greeter) Talk() {
 }
 
 func main() {
-	var talker Talker
-	talker = &Greeter{"Bob"}
-	talker.Talk()
+	os.Stdout.Write([]byte("os.Stdout example\n"))
 }
