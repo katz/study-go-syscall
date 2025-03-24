@@ -1,25 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"os"
 )
 
 func main() {
-	// stdinからデータ読み込むコードを書く
-
-	for {
-		buffer := make([]byte, 5)
-		size, err := os.Stdin.Read(buffer)
-		if err == io.EOF {
-			fmt.Println("EOF")
-			break
-		}
-		if err != nil {
-			fmt.Println("Error reading from stdin:", err)
-			break
-		}
-		fmt.Printf("size=%d, buffer=%s\n", size, string(buffer))
+	// 指定したファイルを開き、内容をstdoutに出力する
+	file, err := os.Open("test.txt")
+	if err != nil {
+		panic(err)
 	}
+	defer file.Close()
+
+	io.Copy(os.Stdout, file)
 }
