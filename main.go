@@ -2,16 +2,18 @@ package main
 
 import (
 	"io"
+	"net"
 	"os"
 )
 
 func main() {
-	// 指定したファイルを開き、内容をstdoutに出力する
-	file, err := os.Open("test.txt")
+	// example.comにアクセスして、そのレスポンスをstdoutに書き出す
+	conn, err := net.Dial("tcp", "example.com:80")
 	if err != nil {
 		panic(err)
 	}
-	defer file.Close()
+	defer conn.Close()
 
-	io.Copy(os.Stdout, file)
+	io.WriteString(conn, "GET / HTTP/1.0\r\nHost: example.com\r\n\r\n")
+	io.Copy(os.Stdout, conn)
 }
